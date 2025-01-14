@@ -4,7 +4,7 @@ import { InMemoryPetsRepository } from 'test/mocks/in-memory-pets-repository'
 import { RegisterPetsUseCase } from './register-pet'
 import { makePet } from 'test/factories/make-pet'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { OrganizationNotFoundError } from './errors/organization-not-found-error'
+import { OrganizationNotFoundError } from '../../orgs/application/use-cases/errors/organization-not-found-error'
 
 let inMemoryOrganizationRepository: InMemoryOrganizationRepository
 let inMemoryPetsRepository: InMemoryPetsRepository

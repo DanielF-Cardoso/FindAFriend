@@ -1,5 +1,5 @@
 import { Either, left, right } from '@/core/either'
-import { OrganizationNotFoundError } from './errors/organization-not-found-error'
+import { OrganizationNotFoundError } from '../../orgs/application/use-cases/errors/organization-not-found-error'
 import { Pets } from '../domain/entities/pets'
 import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
 import { PetsRepository } from './repositories/pets-repository'
