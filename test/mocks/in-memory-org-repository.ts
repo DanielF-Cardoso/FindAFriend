@@ -9,12 +9,22 @@ export class InMemoryOrganizationRepository implements OrganizationRepository {
   }
 
   async findByEmail(email: string) {
-    const findOrganizationEmail = this.item.find((org) => org.email === email)
+    const organization = this.item.find((org) => org.email === email)
 
-    if (!findOrganizationEmail) {
+    if (!organization) {
       return null
     }
 
-    return findOrganizationEmail
+    return organization
+  }
+
+  async findById(id: string) {
+    const organization = this.item.find((item) => item.id.toString() === id)
+
+    if (!organization) {
+      return null
+    }
+
+    return organization
   }
 }
