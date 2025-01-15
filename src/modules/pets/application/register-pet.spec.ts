@@ -13,7 +13,9 @@ let sut: RegisterPetsUseCase
 describe('Register Pet', () => {
   beforeEach(() => {
     inMemoryOrganizationRepository = new InMemoryOrganizationRepository()
-    inMemoryPetsRepository = new InMemoryPetsRepository()
+    inMemoryPetsRepository = new InMemoryPetsRepository(
+      inMemoryOrganizationRepository,
+    )
     sut = new RegisterPetsUseCase(
       inMemoryOrganizationRepository,
       inMemoryPetsRepository,
@@ -23,15 +25,11 @@ describe('Register Pet', () => {
   it('should be able to create a new pet', async () => {
     const organizationData = makeOrganization()
 
-    console.log(organizationData.id.toString())
-
     await inMemoryOrganizationRepository.create(organizationData)
 
     const petData = makePet({
       organization_id: organizationData.id.toString(),
     })
-
-    console.log(organizationData.id.toString())
 
     const result = await sut.execute(petData)
 
