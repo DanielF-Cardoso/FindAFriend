@@ -1,4 +1,8 @@
-import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
+import { getDistanceBetweenCoordinates } from '@/core/utils/geo-utils'
+import {
+  FindManyNearbyParams,
+  OrganizationRepository,
+} from '@/modules/orgs/application/repositories/org-repository'
 import { Organization } from '@/modules/orgs/domain/entities/org'
 
 export class InMemoryOrganizationRepository implements OrganizationRepository {
@@ -26,5 +30,21 @@ export class InMemoryOrganizationRepository implements OrganizationRepository {
     }
 
     return organization
+  }
+
+  async findManyNearby(params: FindManyNearbyParams) {
+    return this.item.filter((items) => {
+      const distance = getDistanceBetweenCoordinates(
+        { latitude: params.latitude, longitude: params.longitude },
+        {
+          latitude: items.latitude,
+          longitude: items.longitude,
+        },
+      )
+
+      const kilometersToReturn = 10
+
+      return distance < kilometersToReturn
+    })
   }
 }
