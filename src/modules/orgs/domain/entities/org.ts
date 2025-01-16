@@ -14,8 +14,8 @@ interface OrganizationProps {
   neighborhood: string
   city: string
   state: string
-  longitude: string
-  latitude: string
+  longitude: number
+  latitude: number
   createdAt: Date
   updatedAt?: Date | null
 }

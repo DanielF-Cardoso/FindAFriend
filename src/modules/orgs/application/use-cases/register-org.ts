@@ -16,8 +16,8 @@ interface RegisterOrganizationRequest {
   neighborhood: string
   city: string
   state: string
-  longitude: string
-  latitude: string
+  longitude: number
+  latitude: number
 }
 
 type RegisterOrganizationResponse = Either<
