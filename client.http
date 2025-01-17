@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3333
 
 # @name create_organization
 POST {{baseUrl}}/orgs
