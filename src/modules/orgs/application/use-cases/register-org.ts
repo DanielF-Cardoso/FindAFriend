@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { Either, left, right } from '../../../../core/either'
 import { HasherGenerator } from '../../cryptography/hash-generator'
 import { Organization } from '../../domain/entities/org'
@@ -27,6 +28,7 @@ type RegisterOrganizationResponse = Either<
   }
 >
 
+@Injectable()
 export class RegisterOrganizationUseCase {
   constructor(
     private orgRepository: OrganizationRepository,

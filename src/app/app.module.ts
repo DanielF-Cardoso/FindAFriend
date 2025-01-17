@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { OrganizationModule } from '@/modules/orgs/infra/http/organization.module'
+import { Module } from '@nestjs/common'
 
 @Module({
-  imports: [],
+  imports: [OrganizationModule],
   controllers: [],
   providers: [],
 })

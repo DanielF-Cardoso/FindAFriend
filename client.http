@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:3000
+
+# @name create_organization
+POST {{baseUrl}}/orgs
+Content-Type: application/json
+
+{
+    "name": "Organization Name",
+    "ownerName": "John Doe",
+    "email": "organization@email.com",
+    "password": "123456",
+    "phone": "123456789",
+    "cep": "12345678",
+    "street": "Organization Street",
+    "number": "123",
+    "neighborhood": "Organization Neighborhood",
+    "city": "Organization City",
+    "state": "Organization State",
+    "longitude": 123.456,
+    "latitude": 123.456
+}
+
+###
