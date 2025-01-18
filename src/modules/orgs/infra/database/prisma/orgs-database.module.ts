@@ -16,4 +16,4 @@ import { PrismaOrganizationRepository } from './prisma-orgs.repository'
   ],
   exports: [PrismaService, OrganizationRepository],
 })
-export class OrganizationsDatabaseModule { }
+export class OrganizationsDatabaseModule {}

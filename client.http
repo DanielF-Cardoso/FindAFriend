@@ -21,3 +21,12 @@ Content-Type: application/json
 }
 
 ###
+
+# @name authenticate
+POST {{baseUrl}}/orgs/auth
+Content-Type: application/json
+
+{
+    "email": "organization@email.com",
+    "password": "123456"
+}

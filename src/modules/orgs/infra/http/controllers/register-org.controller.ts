@@ -1,3 +1,4 @@
+import { Public } from '@/app/auth/public'
 import { ZodValidationPipe } from '@/app/pipes/zod-validation.pipe'
 import { OrganizationAlreadyExistsError } from '@/modules/orgs/application/use-cases/errors/organization-already-exists-error'
 import { RegisterOrganizationUseCase } from '@/modules/orgs/application/use-cases/register-org'
@@ -32,6 +33,7 @@ type registerOrganizationBodySchema = z.infer<
 >
 
 @Controller('/orgs')
+@Public()
 export class RegisterOrganizationController {
   constructor(
     private registerOrganizationUseCase: RegisterOrganizationUseCase,

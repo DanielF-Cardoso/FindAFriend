@@ -9,7 +9,7 @@ import { PrismaService } from '@/app/database/prisma.service'
 
 @Injectable()
 export class PrismaOrganizationRepository implements OrganizationRepository {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(org: Organization): Promise<void> {
     const data = PrismaOrganizationsMapper.toPersistence(org)

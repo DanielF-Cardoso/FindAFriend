@@ -1,6 +1,12 @@
+import { PrismaService } from '@/app/database/prisma.service'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { Organization } from '@/modules/orgs/domain/entities/org'
+import {
+  Organization,
+  OrganizationProps,
+} from '@/modules/orgs/domain/entities/org'
+import { PrismaOrganizationsMapper } from '@/modules/orgs/infra/database/mappers/prisma-orgs-mapper'
 import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
 
 export function makeOrganization(
   overrides: Partial<Organization> = {},
@@ -27,4 +33,21 @@ export function makeOrganization(
   )
 
   return createOrganization
+}
+
+@Injectable()
+export class OrganizationFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaOrganization(
+    data: Partial<OrganizationProps> = {},
+  ): Promise<Organization> {
+    const organization = makeOrganization(data)
+
+    await this.prisma.organization.create({
+      data: PrismaOrganizationsMapper.toPersistence(organization),
+    })
+
+    return organization
+  }
 }
