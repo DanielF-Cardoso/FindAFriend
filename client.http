@@ -1,4 +1,6 @@
 @baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
+
 
 # @name create_organization
 POST {{baseUrl}}/orgs
@@ -29,4 +31,20 @@ Content-Type: application/json
 {
     "email": "organization@email.com",
     "password": "123456"
+}
+
+###
+
+# @name register-pet
+POST {{baseUrl}}/orgs/pets
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "petName": "Pet Name",
+    "about": "About",
+    "age": "10",
+    "size": "10",
+    "energy_level": "10",
+    "environment": "10"
 }

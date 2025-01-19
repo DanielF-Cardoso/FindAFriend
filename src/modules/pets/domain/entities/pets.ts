@@ -2,10 +2,10 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
-interface PetsProps {
+export interface PetsProps {
   petName: string
   about: string
-  age: number
+  age: string
   size: string
   energy_level: string
   environment: string

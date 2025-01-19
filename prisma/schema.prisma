@@ -41,7 +41,7 @@ model Organization {
 
 model Pet {
   id              String @id @unique @default(uuid())
-  name            String
+  petName         String
   about           String
   age             String
   size            String

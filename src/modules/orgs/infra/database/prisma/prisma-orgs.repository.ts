@@ -9,7 +9,7 @@ import { PrismaService } from '@/app/database/prisma.service'
 
 @Injectable()
 export class PrismaOrganizationRepository implements OrganizationRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(org: Organization): Promise<void> {
     const data = PrismaOrganizationsMapper.toPersistence(org)
@@ -28,8 +28,16 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
     return PrismaOrganizationsMapper.toDomain(organization)
   }
 
-  findById(id: string): Promise<Organization | null> {
-    throw new Error('Method not implemented.')
+  async findById(id: string): Promise<Organization | null> {
+    const organization = await this.prisma.organization.findUnique({
+      where: { id },
+    })
+
+    if (!organization) {
+      return null
+    }
+
+    return PrismaOrganizationsMapper.toDomain(organization)
   }
 
   findManyNearby(params: FindManyNearbyParams): Promise<Organization[]> {

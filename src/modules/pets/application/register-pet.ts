@@ -3,11 +3,12 @@ import { OrganizationNotFoundError } from '../../orgs/application/use-cases/erro
 import { Pets } from '../domain/entities/pets'
 import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
 import { PetsRepository } from './repositories/pets-repository'
+import { Injectable } from '@nestjs/common'
 
 interface RegisterPetsRequest {
   petName: string
   about: string
-  age: number
+  age: string
   size: string
   energy_level: string
   environment: string
@@ -21,6 +22,7 @@ type RegisterPetsResponse = Either<
   }
 >
 
+@Injectable()
 export class RegisterPetsUseCase {
   constructor(
     private orgRepository: OrganizationRepository,

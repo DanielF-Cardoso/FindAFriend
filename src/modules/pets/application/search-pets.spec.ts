@@ -115,12 +115,12 @@ describe('Search Pets', () => {
 
     const oneYearOldPet = makePet({
       organization_id: createOrganization.id.toString(),
-      age: 1,
+      age: '1',
     })
 
     const twoYearOldPet = makePet({
       organization_id: createOrganization.id.toString(),
-      age: 2,
+      age: '2',
     })
 
     await inMemoryPetsRepository.create(oneYearOldPet)
@@ -135,7 +135,7 @@ describe('Search Pets', () => {
     expect(result.value?.pets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          age: 1,
+          age: '1',
         }),
       ]),
     )
