@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { PetNotFoundError } from './errors/pet-not-found-error'
 import { Pets } from '../domain/entities/pets'
 import { PetsRepository } from './repositories/pets-repository'
+import { Injectable } from '@nestjs/common'
 
 interface GetPetRequest {
   id: string
@@ -14,6 +15,7 @@ type GetPetResponse = Either<
   }
 >
 
+@Injectable()
 export class GetPetUseCase {
   constructor(private petsRepository: PetsRepository) {}
 

@@ -48,3 +48,9 @@ Authorization: Bearer {{authToken}}
     "energy_level": "10",
     "environment": "10"
 }
+
+###
+
+# @name get-pet
+GET {{baseUrl}}/pets/e5b4f671-a31a-4696-aed7-cf85069e9413
+Content-Type: application/json

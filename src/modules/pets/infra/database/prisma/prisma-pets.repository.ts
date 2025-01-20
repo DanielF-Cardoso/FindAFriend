@@ -28,7 +28,19 @@ export class PrismaPetsRepository implements PetsRepository {
     return PrismaPetsMapper.toDomain(pet)
   }
 
-  findAll(params: FindAllPetsParams): Promise<Pets[]> {
-    throw new Error('Method not implemented.')
+  async findAll(params: FindAllPetsParams): Promise<Pets[]> {
+    const pets = await this.prisma.pet.findMany({
+      where: {
+        age: params.age,
+        size: params.size,
+        energy_level: params.energy_level,
+        environment: params.environment,
+        organization: {
+          city: params.city,
+        },
+      },
+    })
+
+    return pets.map((pet) => PrismaPetsMapper.toDomain(pet))
   }
 }
