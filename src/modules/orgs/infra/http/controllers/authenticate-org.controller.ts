@@ -6,6 +6,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  HttpCode,
   Post,
   UnauthorizedException,
   UsePipes,
@@ -30,6 +31,7 @@ export class AuthenticateOrganizationController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(authenticateOrganizationBodySchema))
+  @HttpCode(200)
   async handle(@Body() body: AuthenticateOrganizationBodySchema) {
     const { email, password } = body
 
