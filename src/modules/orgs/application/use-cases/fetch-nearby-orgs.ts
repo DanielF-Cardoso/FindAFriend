@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common'
 import { Either, left, right } from '../../../../core/either'
 import { Organization } from '../../domain/entities/org'
 import { OrganizationRepository } from '../repositories/org-repository'
@@ -15,6 +16,7 @@ type FetchNearbyOrganizationResponse = Either<
   }
 >
 
+@Injectable()
 export class FetchNearbyOrganizationUseCase {
   constructor(private orgRepository: OrganizationRepository) {}
 

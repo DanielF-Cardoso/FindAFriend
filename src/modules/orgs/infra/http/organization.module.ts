@@ -5,13 +5,20 @@ import { OrganizationsDatabaseModule } from '../database/prisma/orgs-database.mo
 import { CryptographyModule } from '@/app/cryptography/cryptography.module'
 import { AuthenticateOrganizationController } from './controllers/authenticate-org.controller'
 import { AuthenticateOrganizationUseCase } from '../../application/use-cases/authenticate-org'
+import { FetchNearbyOrganizationsController } from './controllers/fetch-nearby-orgs.controller'
+import { FetchNearbyOrganizationUseCase } from '../../application/use-cases/fetch-nearby-orgs'
 
 @Module({
   imports: [OrganizationsDatabaseModule, CryptographyModule],
   controllers: [
     RegisterOrganizationController,
     AuthenticateOrganizationController,
+    FetchNearbyOrganizationsController,
   ],
-  providers: [RegisterOrganizationUseCase, AuthenticateOrganizationUseCase],
+  providers: [
+    RegisterOrganizationUseCase,
+    AuthenticateOrganizationUseCase,
+    FetchNearbyOrganizationUseCase,
+  ],
 })
 export class OrganizationModule {}

@@ -9,7 +9,7 @@ import { PrismaService } from '@/app/database/prisma.service'
 
 @Injectable()
 export class PrismaOrganizationRepository implements OrganizationRepository {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(org: Organization): Promise<void> {
     const data = PrismaOrganizationsMapper.toPersistence(org)
@@ -40,7 +40,19 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
     return PrismaOrganizationsMapper.toDomain(organization)
   }
 
-  findManyNearby(params: FindManyNearbyParams): Promise<Organization[]> {
-    throw new Error('Method not implemented.')
+  async findManyNearby(params: FindManyNearbyParams): Promise<Organization[]> {
+    const { latitude, longitude } = params
+
+    const organizations = await this.prisma.$queryRaw<Organization[]>`
+      SELECT * FROM organizations
+      WHERE (
+        6371 * acos(
+          cos(radians(${latitude})) * cos(radians(latitude)) * cos(radians(longitude) - radians(${longitude})) +
+          sin(radians(${latitude})) * sin(radians(latitude))
+        )
+      ) <= 10
+    `
+
+    return organizations
   }
 }
