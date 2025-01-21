@@ -6,6 +6,7 @@ export interface FindAllPetsParams {
   age?: string
   energy_level?: string
   environment?: string
+  page: number
 }
 
 export abstract class PetsRepository {

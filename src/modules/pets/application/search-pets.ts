@@ -1,6 +1,7 @@
 import { Either, right } from '@/core/either'
 import { Pets } from '../domain/entities/pets'
 import { PetsRepository } from './repositories/pets-repository'
+import { Injectable } from '@nestjs/common'
 
 interface SearchPetsRequest {
   city: string
@@ -8,6 +9,7 @@ interface SearchPetsRequest {
   age?: string
   energy_level?: string
   environment?: string
+  page: number
 }
 
 type SearchPetsResponse = Either<
@@ -17,6 +19,7 @@ type SearchPetsResponse = Either<
   }
 >
 
+@Injectable()
 export class SearchPetsUseCase {
   constructor(private petsRepository: PetsRepository) {}
 
@@ -26,6 +29,7 @@ export class SearchPetsUseCase {
     age,
     energy_level,
     environment,
+    page,
   }: SearchPetsRequest): Promise<SearchPetsResponse> {
     const pets = await this.petsRepository.findAll({
       city,
@@ -33,6 +37,7 @@ export class SearchPetsUseCase {
       age,
       energy_level,
       environment,
+      page,
     })
 
     return right({

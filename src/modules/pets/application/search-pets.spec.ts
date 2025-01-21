@@ -37,6 +37,7 @@ describe('Search Pets', () => {
 
     const result = await sut.execute({
       city: 'São Paulo',
+      page: 1,
     })
 
     expect(result.value?.pets).toHaveLength(2)
@@ -87,6 +88,7 @@ describe('Search Pets', () => {
     const result = await sut.execute({
       city: 'São Paulo',
       size: 'small',
+      page: 1,
     })
 
     expect(result.value?.pets).toHaveLength(1)
@@ -129,6 +131,7 @@ describe('Search Pets', () => {
     const result = await sut.execute({
       city: 'São Paulo',
       age: '1',
+      page: 1,
     })
 
     expect(result.value?.pets).toHaveLength(1)
@@ -170,6 +173,7 @@ describe('Search Pets', () => {
     const result = await sut.execute({
       city: 'São Paulo',
       energy_level: 'low',
+      page: 1,
     })
 
     expect(result.value?.pets).toHaveLength(1)
@@ -211,6 +215,7 @@ describe('Search Pets', () => {
     const result = await sut.execute({
       city: 'São Paulo',
       environment: 'indoor',
+      page: 1,
     })
 
     expect(result.value?.pets).toHaveLength(1)
@@ -227,5 +232,33 @@ describe('Search Pets', () => {
       )
       expect(petOrganization?.city).toBe('São Paulo')
     })
+  })
+
+  it('should be able to paginate search results', async () => {
+    const createOrganization = makeOrganization({
+      city: 'São Paulo',
+    })
+
+    await inMemoryOrganizationRepository.create(createOrganization)
+
+    for (let i = 0; i < 50; i++) {
+      const createPet = makePet({
+        organization_id: createOrganization.id.toString(),
+      })
+      await inMemoryPetsRepository.create(createPet)
+    }
+
+    const resultPage1 = await sut.execute({
+      city: 'São Paulo',
+      page: 1,
+    })
+
+    const resultPage2 = await sut.execute({
+      city: 'São Paulo',
+      page: 2,
+    })
+
+    expect(resultPage1.value?.pets).toHaveLength(20)
+    expect(resultPage2.value?.pets).toHaveLength(20)
   })
 })
