@@ -1,6 +1,6 @@
 import { GetPetUseCase } from '@/modules/pets/application/get-pet'
 import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
-import { GetPetPresenter } from '../presenters/get-pet.presenter'
+import { PetPresenter } from '../presenters/pet.presenter'
 import { Public } from '@/app/auth/public'
 
 @Controller('/pets/:petId')
@@ -18,6 +18,6 @@ export class GetPetController {
       throw new BadRequestException()
     }
 
-    return { pet: GetPetPresenter.toHTTP(getPet.value.pet) }
+    return { pet: PetPresenter.toHTTP(getPet.value.pet) }
   }
 }

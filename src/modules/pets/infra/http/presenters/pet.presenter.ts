@@ -1,6 +1,6 @@
 import { Pets } from '@/modules/pets/domain/entities/pets'
 
-export class GetPetPresenter {
+export class PetPresenter {
   static toHTTP(pets: Pets) {
     return {
       id: pets.id.toString(),

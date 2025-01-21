@@ -29,6 +29,9 @@ export class PrismaPetsRepository implements PetsRepository {
   }
 
   async findAll(params: FindAllPetsParams): Promise<Pets[]> {
+    const pageSize = 20
+    const skip = (params.page - 1) * pageSize
+
     const pets = await this.prisma.pet.findMany({
       where: {
         age: params.age,
@@ -39,6 +42,8 @@ export class PrismaPetsRepository implements PetsRepository {
           city: params.city,
         },
       },
+      skip,
+      take: pageSize,
     })
 
     return pets.map((pet) => PrismaPetsMapper.toDomain(pet))

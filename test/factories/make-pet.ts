@@ -13,7 +13,7 @@ export function makePet(
     {
       petName: faker.animal.cat(),
       about: faker.lorem.paragraph(),
-      age: faker.number.int().toString(), // Certifique-se de que age é uma string
+      age: faker.number.int().toString(),
       size: faker.helpers.arrayElement(['small', 'medium', 'large']),
       energy_level: faker.helpers.arrayElement(['low', 'medium', 'high']),
       environment: faker.helpers.arrayElement(['indoor', 'outdoor']),

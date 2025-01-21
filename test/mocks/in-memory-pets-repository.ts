@@ -37,7 +37,7 @@ export class InMemoryPetsRepository implements PetsRepository {
           (org) => org.id.toString() === item.organization_id.toString(),
         ),
       )
-      .filter((item) => (params.age ? item.age === Number(params.age) : true))
+      .filter((item) => (params.age ? item.age === String(params.age) : true))
       .filter((item) => (params.size ? item.size === params.size : true))
       .filter((item) =>
         params.energy_level ? item.energy_level === params.energy_level : true,
@@ -46,6 +46,9 @@ export class InMemoryPetsRepository implements PetsRepository {
         params.environment ? item.environment === params.environment : true,
       )
 
-    return pets
+    const page = Number(params.page ?? 1)
+    const pageSize = 20
+
+    return pets.slice((page - 1) * pageSize, page * pageSize)
   }
 }
