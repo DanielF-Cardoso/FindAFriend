@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { Public } from '@/app/auth/public'
 import { FetchNearbyOrganizationUseCase } from '@/modules/orgs/application/use-cases/fetch-nearby-orgs'
 import { OrgPresenter } from '../presenters/org.presenter'
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 const querySchema = z.object({
   latitude: z.coerce.number().refine((value) => {
@@ -18,6 +19,7 @@ const queryValidationPipe = new ZodValidationPipe(querySchema)
 
 type QuerySchema = z.infer<typeof querySchema>
 
+@ApiTags('organizations')
 @Controller('/orgs/nearby')
 export class FetchNearbyOrganizationsController {
   constructor(
@@ -26,6 +28,14 @@ export class FetchNearbyOrganizationsController {
 
   @Get()
   @Public()
+  @ApiQuery({ name: 'latitude', required: true, type: Number })
+  @ApiQuery({ name: 'longitude', required: true, type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'Nearby organizations fetched successfully',
+    type: [OrgPresenter],
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   async handle(@Query(queryValidationPipe) query: QuerySchema) {
     const { latitude, longitude } = query
 

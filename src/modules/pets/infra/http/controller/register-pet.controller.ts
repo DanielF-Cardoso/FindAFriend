@@ -10,6 +10,7 @@ import {
   Controller,
   Post,
 } from '@nestjs/common'
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 
 const registerPetBodySchema = z.object({
@@ -25,11 +26,36 @@ const bodyValidationPipe = new ZodValidationPipe(registerPetBodySchema)
 
 type RegisterPetBodySchema = z.infer<typeof registerPetBodySchema>
 
+@ApiTags('pets')
 @Controller('/orgs/pets')
 export class RegisterPetController {
   constructor(private registerPetUseCase: RegisterPetsUseCase) {}
 
   @Post()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        petName: { type: 'string' },
+        about: { type: 'string' },
+        age: { type: 'string' },
+        size: { type: 'string' },
+        energy_level: { type: 'string' },
+        environment: { type: 'string' },
+      },
+      required: [
+        'petName',
+        'about',
+        'age',
+        'size',
+        'energy_level',
+        'environment',
+      ],
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Pet registered successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 409, description: 'Conflict' })
   async handle(
     @Body(bodyValidationPipe) body: RegisterPetBodySchema,
     @CurrentUser() orgId: UserPayload,

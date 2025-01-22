@@ -11,6 +11,7 @@ import {
   UnauthorizedException,
   UsePipes,
 } from '@nestjs/common'
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 
 const authenticateOrganizationBodySchema = z.object({
@@ -22,16 +23,37 @@ type AuthenticateOrganizationBodySchema = z.infer<
   typeof authenticateOrganizationBodySchema
 >
 
+@ApiTags('organizations')
 @Controller('/orgs/auth')
-@Public()
 export class AuthenticateOrganizationController {
   constructor(
     private authenticateOrganizationUseCase: AuthenticateOrganizationUseCase,
   ) {}
 
   @Post()
+  @Public()
   @UsePipes(new ZodValidationPipe(authenticateOrganizationBodySchema))
   @HttpCode(200)
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', format: 'email' },
+        password: { type: 'string' },
+      },
+      required: ['email', 'password'],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Authentication successful',
+    schema: {
+      type: 'object',
+      properties: { access_token: { type: 'string' } },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async handle(@Body() body: AuthenticateOrganizationBodySchema) {
     const { email, password } = body
 

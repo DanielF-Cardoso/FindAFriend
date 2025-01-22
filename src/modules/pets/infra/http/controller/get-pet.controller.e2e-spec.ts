@@ -25,14 +25,14 @@ describe('Get Pet (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /pets/:petId', async () => {
+  test('[GET] /pet/:petId', async () => {
     const makeOrganization = await organizationFactory.makePrismaOrganization()
     const makePet = await petFactory.makePrismaPet({
       organization_id: makeOrganization.id.toString(),
     })
 
     const response = await request(app.getHttpServer()).get(
-      `/pets/${makePet.id}`,
+      `/pet/${makePet.id}`,
     )
 
     expect(response.statusCode).toBe(200)

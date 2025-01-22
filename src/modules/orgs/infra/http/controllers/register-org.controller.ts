@@ -10,6 +10,7 @@ import {
   Post,
   UsePipes,
 } from '@nestjs/common'
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 
 const registerOrganizationBodySchema = z.object({
@@ -32,14 +33,51 @@ type registerOrganizationBodySchema = z.infer<
   typeof registerOrganizationBodySchema
 >
 
+@ApiTags('organizations')
 @Controller('/orgs')
-@Public()
 export class RegisterOrganizationController {
   constructor(
     private registerOrganizationUseCase: RegisterOrganizationUseCase,
   ) {}
 
   @Post()
+  @Public()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        ownerName: { type: 'string' },
+        email: { type: 'string', format: 'email' },
+        password: { type: 'string' },
+        phone: { type: 'string' },
+        cep: { type: 'string' },
+        street: { type: 'string' },
+        number: { type: 'string' },
+        neighborhood: { type: 'string' },
+        city: { type: 'string' },
+        state: { type: 'string' },
+      },
+      required: [
+        'name',
+        'ownerName',
+        'email',
+        'password',
+        'phone',
+        'cep',
+        'street',
+        'number',
+        'neighborhood',
+        'city',
+        'state',
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Organization registered successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   @UsePipes(new ZodValidationPipe(registerOrganizationBodySchema))
   async handle(@Body() body: registerOrganizationBodySchema) {
     const {
