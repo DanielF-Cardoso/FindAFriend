@@ -1,7 +1,7 @@
 import { Public } from '@/app/auth/public'
-import { ZodValidationPipe } from '@/app/pipes/zod-validation.pipe'
 import { OrganizationAlreadyExistsError } from '@/modules/orgs/application/use-cases/errors/organization-already-exists-error'
 import { RegisterOrganizationUseCase } from '@/modules/orgs/application/use-cases/register-org'
+import { RegisterOrganizationDto } from '@/modules/orgs/dtos/register-org.dto'
 import {
   BadRequestException,
   Body,
@@ -9,29 +9,9 @@ import {
   Controller,
   Post,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { z } from 'zod'
-
-const registerOrganizationBodySchema = z.object({
-  name: z.string(),
-  ownerName: z.string(),
-  email: z.string().email(),
-  password: z.string(),
-  phone: z.string(),
-  cep: z.string(),
-  street: z.string(),
-  number: z.string(),
-  neighborhood: z.string(),
-  city: z.string(),
-  state: z.string(),
-  longitude: z.number(),
-  latitude: z.number(),
-})
-
-type registerOrganizationBodySchema = z.infer<
-  typeof registerOrganizationBodySchema
->
 
 @ApiTags('organizations')
 @Controller('/orgs')
@@ -42,75 +22,16 @@ export class RegisterOrganizationController {
 
   @Post()
   @Public()
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        ownerName: { type: 'string' },
-        email: { type: 'string', format: 'email' },
-        password: { type: 'string' },
-        phone: { type: 'string' },
-        cep: { type: 'string' },
-        street: { type: 'string' },
-        number: { type: 'string' },
-        neighborhood: { type: 'string' },
-        city: { type: 'string' },
-        state: { type: 'string' },
-      },
-      required: [
-        'name',
-        'ownerName',
-        'email',
-        'password',
-        'phone',
-        'cep',
-        'street',
-        'number',
-        'neighborhood',
-        'city',
-        'state',
-      ],
-    },
-  })
+  @ApiBody({ type: RegisterOrganizationDto })
   @ApiResponse({
     status: 201,
     description: 'Organization registered successfully',
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  @UsePipes(new ZodValidationPipe(registerOrganizationBodySchema))
-  async handle(@Body() body: registerOrganizationBodySchema) {
-    const {
-      name,
-      ownerName,
-      email,
-      password,
-      phone,
-      cep,
-      street,
-      number,
-      neighborhood,
-      city,
-      state,
-      longitude,
-      latitude,
-    } = body
-
-    const createOrganization = await this.registerOrganizationUseCase.execute({
-      name,
-      ownerName,
-      email,
-      password,
-      phone,
-      cep,
-      street,
-      number,
-      neighborhood,
-      city,
-      state,
-      longitude,
-      latitude,
-    })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async handle(@Body() body: RegisterOrganizationDto) {
+    const createOrganization =
+      await this.registerOrganizationUseCase.execute(body)
 
     if (createOrganization.isLeft()) {
       const error = createOrganization.value

@@ -3,11 +3,7 @@ import { Either, left, right } from '../../../../core/either'
 import { Organization } from '../../domain/entities/org'
 import { OrganizationRepository } from '../repositories/org-repository'
 import { OrganizationNotFoundError } from './errors/organization-not-found-error'
-
-interface FetchNearbyOrganizationRequest {
-  userLatitude: number
-  userLongitude: number
-}
+import { FetchNearbyOrganizationDto } from '../../dtos/fetch-nearby-organization.dto'
 
 type FetchNearbyOrganizationResponse = Either<
   OrganizationNotFoundError,
@@ -20,13 +16,14 @@ type FetchNearbyOrganizationResponse = Either<
 export class FetchNearbyOrganizationUseCase {
   constructor(private orgRepository: OrganizationRepository) {}
 
-  async execute({
-    userLatitude,
-    userLongitude,
-  }: FetchNearbyOrganizationRequest): Promise<FetchNearbyOrganizationResponse> {
+  async execute(
+    dto: FetchNearbyOrganizationDto,
+  ): Promise<FetchNearbyOrganizationResponse> {
+    const { userLatitude, userLongitude } = dto
+
     const findNearbyOrganization = await this.orgRepository.findManyNearby({
-      latitude: userLatitude,
-      longitude: userLongitude,
+      userLatitude,
+      userLongitude,
     })
 
     if (findNearbyOrganization.length === 0) {

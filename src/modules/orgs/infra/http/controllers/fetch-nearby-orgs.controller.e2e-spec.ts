@@ -41,8 +41,8 @@ describe('Nearby Orgs (E2E)', () => {
     const response = await request(app.getHttpServer())
       .get('/orgs/nearby')
       .query({
-        latitude: organizationWithin10km.latitude,
-        longitude: organizationWithin10km.longitude,
+        userLatitude: organizationWithin10km.latitude,
+        userLongitude: organizationWithin10km.longitude,
       })
 
     expect(response.statusCode).toBe(200)

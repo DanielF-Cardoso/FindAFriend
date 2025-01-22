@@ -1,11 +1,9 @@
-import {
-  FindManyNearbyParams,
-  OrganizationRepository,
-} from '@/modules/orgs/application/repositories/org-repository'
+import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
 import { Organization } from '@/modules/orgs/domain/entities/org'
 import { PrismaOrganizationsMapper } from '../mappers/prisma-orgs-mapper'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@/app/database/prisma.service'
+import { FetchNearbyOrganizationDto } from '@/modules/orgs/dtos/fetch-nearby-organization.dto'
 
 @Injectable()
 export class PrismaOrganizationRepository implements OrganizationRepository {
@@ -40,19 +38,22 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
     return PrismaOrganizationsMapper.toDomain(organization)
   }
 
-  async findManyNearby(params: FindManyNearbyParams): Promise<Organization[]> {
-    const { latitude, longitude } = params
+  async findManyNearby(
+    params: FetchNearbyOrganizationDto,
+  ): Promise<Organization[]> {
+    const { userLatitude, userLongitude } = params
 
-    const organizations = await this.prisma.$queryRaw<Organization[]>`
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const organizations = await this.prisma.$queryRaw<any[]>`
       SELECT * FROM organizations
       WHERE (
         6371 * acos(
-          cos(radians(${latitude})) * cos(radians(latitude)) * cos(radians(longitude) - radians(${longitude})) +
-          sin(radians(${latitude})) * sin(radians(latitude))
+          cos(radians(CAST(${userLatitude} AS DOUBLE PRECISION))) * cos(radians(latitude)) * cos(radians(longitude) - radians(CAST(${userLongitude} AS DOUBLE PRECISION))) +
+          sin(radians(CAST(${userLatitude} AS DOUBLE PRECISION))) * sin(radians(latitude))
         )
       ) <= 10
     `
 
-    return organizations
+    return organizations.map((org) => PrismaOrganizationsMapper.toDomain(org))
   }
 }

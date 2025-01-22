@@ -4,11 +4,7 @@ import { Encrypter } from '../../cryptography/encrypter'
 import { HasherComparer } from '../../cryptography/hash-comparer'
 import { OrganizationRepository } from '../repositories/org-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
-
-interface AuthenticateOrganizationRequest {
-  email: string
-  password: string
-}
+import { AuthenticateOrganizationDto } from '../../dtos/authenticate-org.dto'
 
 type AuthenticateOrganizationResponse = Either<
   WrongCredentialsError,
@@ -25,31 +21,30 @@ export class AuthenticateOrganizationUseCase {
     private encrypter: Encrypter,
   ) {}
 
-  async execute({
-    email,
-    password,
-  }: AuthenticateOrganizationRequest): Promise<AuthenticateOrganizationResponse> {
-    const findOrganizationByEmail = await this.orgRepository.findByEmail(email)
+  async execute(
+    dto: AuthenticateOrganizationDto,
+  ): Promise<AuthenticateOrganizationResponse> {
+    const { email, password } = dto
 
-    if (!findOrganizationByEmail) {
+    const organization = await this.orgRepository.findByEmail(email)
+
+    if (!organization) {
       return left(new WrongCredentialsError())
     }
 
-    const isPasswordValid = await this.hashComparer.compare(
+    const passwordMatches = await this.hashComparer.compare(
       password,
-      findOrganizationByEmail.password,
+      organization.password,
     )
 
-    if (!isPasswordValid) {
+    if (!passwordMatches) {
       return left(new WrongCredentialsError())
     }
 
     const accessToken = await this.encrypter.encrypt({
-      sub: findOrganizationByEmail.id.toString(),
+      sub: organization.id.toString(),
     })
 
-    return right({
-      accessToken,
-    })
+    return right({ accessToken })
   }
 }

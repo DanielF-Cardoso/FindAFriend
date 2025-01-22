@@ -4,22 +4,7 @@ import { HasherGenerator } from '../../cryptography/hash-generator'
 import { Organization } from '../../domain/entities/org'
 import { OrganizationRepository } from '../repositories/org-repository'
 import { OrganizationAlreadyExistsError } from './errors/organization-already-exists-error'
-
-interface RegisterOrganizationRequest {
-  name: string
-  ownerName: string
-  email: string
-  password: string
-  phone: string
-  cep: string
-  street: string
-  number: string
-  neighborhood: string
-  city: string
-  state: string
-  longitude: number
-  latitude: number
-}
+import { RegisterOrganizationDto } from '../../dtos/register-org.dto'
 
 type RegisterOrganizationResponse = Either<
   OrganizationAlreadyExistsError,
@@ -35,21 +20,25 @@ export class RegisterOrganizationUseCase {
     private hashGenerator: HasherGenerator,
   ) {}
 
-  async execute({
-    name,
-    ownerName,
-    email,
-    password,
-    phone,
-    cep,
-    street,
-    number,
-    neighborhood,
-    city,
-    state,
-    longitude,
-    latitude,
-  }: RegisterOrganizationRequest): Promise<RegisterOrganizationResponse> {
+  async execute(
+    dto: RegisterOrganizationDto,
+  ): Promise<RegisterOrganizationResponse> {
+    const {
+      name,
+      ownerName,
+      email,
+      password,
+      phone,
+      cep,
+      street,
+      number,
+      neighborhood,
+      city,
+      state,
+      longitude,
+      latitude,
+    } = dto
+
     const organizationWithSameEmail =
       await this.orgRepository.findByEmail(email)
 
