@@ -33,17 +33,17 @@ export class FetchNearbyOrganizationsController {
   async handle(@Query() query: FetchNearbyOrganizationDto) {
     const { userLatitude, userLongitude } = query
 
-    const nearbyOrgs = await this.fetchNearbyOrganizationUseCase.execute({
+    const result = await this.fetchNearbyOrganizationUseCase.execute({
       userLatitude,
       userLongitude,
     })
 
-    if (nearbyOrgs.isLeft()) {
+    if (result.isLeft()) {
       throw new BadRequestException()
     }
 
     return {
-      organizations: nearbyOrgs.value.organization.map(OrgPresenter.toHTTP),
+      organizations: result.value.organization.map(OrgPresenter.toHTTP),
     }
   }
 }

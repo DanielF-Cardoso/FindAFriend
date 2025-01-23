@@ -30,11 +30,10 @@ export class RegisterOrganizationController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @UsePipes(new ValidationPipe({ transform: true }))
   async handle(@Body() body: RegisterOrganizationDto) {
-    const createOrganization =
-      await this.registerOrganizationUseCase.execute(body)
+    const result = await this.registerOrganizationUseCase.execute(body)
 
-    if (createOrganization.isLeft()) {
-      const error = createOrganization.value
+    if (result.isLeft()) {
+      const error = result.value
 
       switch (error.constructor) {
         case OrganizationAlreadyExistsError:

@@ -39,14 +39,13 @@ export class AuthenticateOrganizationController {
   async handle(@Body() body: AuthenticateOrganizationDto) {
     const { email, password } = body
 
-    const authenticateOrganization =
-      await this.authenticateOrganizationUseCase.execute({
-        email,
-        password,
-      })
+    const result = await this.authenticateOrganizationUseCase.execute({
+      email,
+      password,
+    })
 
-    if (authenticateOrganization.isLeft()) {
-      const error = authenticateOrganization.value
+    if (result.isLeft()) {
+      const error = result.value
 
       switch (error.constructor) {
         case WrongCredentialsError:
@@ -56,7 +55,7 @@ export class AuthenticateOrganizationController {
       }
     }
 
-    const { accessToken } = authenticateOrganization.value
+    const { accessToken } = result.value
 
     return {
       access_token: accessToken,
