@@ -4,17 +4,23 @@ import { PetsRepository } from './repositories/pets-repository'
 import { Injectable } from '@nestjs/common'
 import { SearchPetsDto } from '../dtos/search-pet.dto'
 import { PetNotFoundError } from './errors/pet-not-found-error'
+import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
+import { Organization } from '@/modules/orgs/domain/entities/org'
 
 type SearchPetsResponse = Either<
   PetNotFoundError,
   {
     pets: Pets[]
+    organizations: Organization[]
   }
 >
 
 @Injectable()
 export class SearchPetsUseCase {
-  constructor(private petsRepository: PetsRepository) {}
+  constructor(
+    private petsRepository: PetsRepository,
+    private organizationRepository: OrganizationRepository,
+  ) {}
 
   async execute({
     city,
@@ -33,12 +39,21 @@ export class SearchPetsUseCase {
       page,
     })
 
-    if (!pets) {
+    if (!pets.length) {
       return left(new PetNotFoundError())
     }
 
+    const organizations = await Promise.all(
+      pets.map((pet) =>
+        this.organizationRepository.findById(pet.organization_id),
+      ),
+    )
+
     return right({
       pets,
+      organizations: organizations.filter(
+        (org): org is Organization => org !== null,
+      ),
     })
   }
 }

@@ -1,5 +1,7 @@
+import { OrgPresenter } from '@/modules/orgs/infra/http/presenters/org.presenter'
 import { Pets } from '@/modules/pets/domain/entities/pets'
 import { ApiProperty } from '@nestjs/swagger'
+import { Organization } from '@/modules/orgs/domain/entities/org'
 
 export class PetPresenter {
   @ApiProperty({ example: '123', description: 'The ID of the pet' })
@@ -35,16 +37,20 @@ export class PetPresenter {
   })
   createdAt!: Date
 
-  static toHTTP(pets: Pets) {
+  @ApiProperty({ type: OrgPresenter })
+  organization!: OrgPresenter
+
+  static toHTTP(pet: Pets, organization: Organization) {
     return {
-      id: pets.id.toString(),
-      petName: pets.petName,
-      about: pets.about,
-      age: pets.age,
-      size: pets.size,
-      energy_level: pets.energy_level,
-      environment: pets.environment,
-      createdAt: pets.createdAt,
+      id: pet.id.toString(),
+      petName: pet.petName,
+      about: pet.about,
+      age: pet.age,
+      size: pet.size,
+      energy_level: pet.energy_level,
+      environment: pet.environment,
+      createdAt: pet.createdAt,
+      organization: OrgPresenter.toHTTP(organization),
     }
   }
 }

@@ -14,7 +14,10 @@ describe('Search Pets', () => {
     inMemoryPetsRepository = new InMemoryPetsRepository(
       inMemoryOrganizationRepository,
     )
-    sut = new SearchPetsUseCase(inMemoryPetsRepository)
+    sut = new SearchPetsUseCase(
+      inMemoryPetsRepository,
+      inMemoryOrganizationRepository,
+    )
   })
 
   it('should be able to search pets by city', async () => {

@@ -3,6 +3,7 @@ import { makePet } from 'test/factories/make-pet'
 import { GetPetUseCase } from './get-pet'
 import { PetNotFoundError } from './errors/pet-not-found-error'
 import { InMemoryOrganizationRepository } from 'test/mocks/in-memory-org-repository'
+import { makeOrganization } from 'test/factories/make-organization'
 
 let inMemoryPetsRepository: InMemoryPetsRepository
 let inMemoryOrganizationsRepository: InMemoryOrganizationRepository
@@ -14,21 +15,32 @@ describe('Get Pet', () => {
     inMemoryPetsRepository = new InMemoryPetsRepository(
       inMemoryOrganizationsRepository,
     )
-    sut = new GetPetUseCase(inMemoryPetsRepository)
+    sut = new GetPetUseCase(
+      inMemoryPetsRepository,
+      inMemoryOrganizationsRepository,
+    )
   })
 
   it('should be able to get a pet', async () => {
-    const pet = makePet()
-    await inMemoryPetsRepository.create(pet)
+    const createOrganization = makeOrganization()
+
+    await inMemoryOrganizationsRepository.create(createOrganization)
+
+    const createPet = makePet({
+      organization_id: createOrganization.id.toString(),
+    })
+
+    await inMemoryPetsRepository.create(createPet)
 
     const result = await sut.execute({
-      id: pet.id.toString(),
+      id: createPet.id.toString(),
     })
 
-    expect(result.isRight()).toBeTruthy()
-    expect(result.value).toEqual({
-      pet,
-    })
+    if (result.isLeft()) {
+      throw new Error('Pet not found')
+    }
+
+    expect(result.value.pet.petName).toBe(createPet.petName)
   })
 
   it('should not be able to get a non-existing pet', async () => {

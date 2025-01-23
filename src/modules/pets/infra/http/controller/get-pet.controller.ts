@@ -48,6 +48,8 @@ export class GetPetController {
       }
     }
 
-    return { pet: PetPresenter.toHTTP(result.value.pet) }
+    return {
+      pet: PetPresenter.toHTTP(result.value.pet, result.value.organization),
+    }
   }
 }

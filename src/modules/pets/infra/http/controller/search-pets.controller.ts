@@ -31,7 +31,7 @@ export class SearchPetsController {
   @ApiResponse({
     status: 200,
     description: 'Pets retrieved successfully',
-    type: [PetPresenter],
+    type: PetPresenter,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'Pet not found' })
@@ -58,6 +58,10 @@ export class SearchPetsController {
       }
     }
 
-    return { pets: result.value.pets.map(PetPresenter.toHTTP) }
+    const petsWithOrganizations = result.value.pets.map((pet, index) =>
+      PetPresenter.toHTTP(pet, result.value.organizations[index]),
+    )
+
+    return { pets: petsWithOrganizations }
   }
 }
