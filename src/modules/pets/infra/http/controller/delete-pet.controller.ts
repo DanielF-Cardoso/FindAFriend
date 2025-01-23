@@ -15,7 +15,7 @@ import { DeletePetUseCase } from '@/modules/pets/application/delete-pet'
 import { DeletePetDto } from '@/modules/pets/dtos/delete-pet'
 import { NotAllowedError } from '@/modules/pets/application/errors/not-allowed-error'
 
-@ApiTags('pets')
+@ApiTags('organizations')
 @Controller('/orgs/pets/:id')
 export class DeletePetController {
   constructor(private deletePetUseCase: DeletePetUseCase) {}

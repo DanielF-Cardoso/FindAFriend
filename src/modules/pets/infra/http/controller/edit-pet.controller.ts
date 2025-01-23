@@ -16,7 +16,7 @@ import { EditPetUseCase } from '@/modules/pets/application/edit-pet'
 import { NotAllowedError } from '@/modules/pets/application/errors/not-allowed-error'
 import { EditPetDto } from '@/modules/pets/dtos/edit-pet.dto'
 
-@ApiTags('pets')
+@ApiTags('organizations')
 @Controller('/orgs/pets/:id')
 export class EditPetController {
   constructor(private editPetUseCase: EditPetUseCase) {}
