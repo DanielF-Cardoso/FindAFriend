@@ -2,13 +2,18 @@ import { InMemoryPetsRepository } from 'test/mocks/in-memory-pets-repository'
 import { makePet } from 'test/factories/make-pet'
 import { GetPetUseCase } from './get-pet'
 import { PetNotFoundError } from './errors/pet-not-found-error'
+import { InMemoryOrganizationRepository } from 'test/mocks/in-memory-org-repository'
 
 let inMemoryPetsRepository: InMemoryPetsRepository
+let inMemoryOrganizationsRepository: InMemoryOrganizationRepository
 let sut: GetPetUseCase
 
 describe('Get Pet', () => {
   beforeEach(() => {
-    inMemoryPetsRepository = new InMemoryPetsRepository()
+    inMemoryOrganizationsRepository = new InMemoryOrganizationRepository()
+    inMemoryPetsRepository = new InMemoryPetsRepository(
+      inMemoryOrganizationsRepository,
+    )
     sut = new GetPetUseCase(inMemoryPetsRepository)
   })
 

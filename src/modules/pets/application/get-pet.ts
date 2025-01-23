@@ -3,10 +3,7 @@ import { PetNotFoundError } from './errors/pet-not-found-error'
 import { Pets } from '../domain/entities/pets'
 import { PetsRepository } from './repositories/pets-repository'
 import { Injectable } from '@nestjs/common'
-
-interface GetPetRequest {
-  id: string
-}
+import { GetPetDto } from '../dtos/get-pet.dto'
 
 type GetPetResponse = Either<
   PetNotFoundError,
@@ -19,11 +16,11 @@ type GetPetResponse = Either<
 export class GetPetUseCase {
   constructor(private petsRepository: PetsRepository) {}
 
-  async execute({ id }: GetPetRequest): Promise<GetPetResponse> {
+  async execute({ id }: GetPetDto): Promise<GetPetResponse> {
     const findPetById = await this.petsRepository.findById(id)
 
     if (!findPetById) {
-      return left(new PetNotFoundError(id))
+      return left(new PetNotFoundError())
     }
 
     return right({

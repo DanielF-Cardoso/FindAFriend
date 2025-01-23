@@ -40,8 +40,12 @@ describe('Search Pets', () => {
       page: 1,
     })
 
-    expect(result.value?.pets).toHaveLength(2)
-    expect(result.value?.pets).toEqual(
+    if (result.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
+    expect(result.value.pets).toHaveLength(2)
+    expect(result.value.pets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           petName: createFirstPet.petName,
@@ -51,7 +55,7 @@ describe('Search Pets', () => {
         }),
       ]),
     )
-    result.value?.pets.forEach((pet) => {
+    result.value.pets.forEach((pet) => {
       const petOrganization = inMemoryOrganizationRepository.item.find(
         (org) => org.id.toString() === pet.organization_id,
       )
@@ -91,8 +95,12 @@ describe('Search Pets', () => {
       page: 1,
     })
 
-    expect(result.value?.pets).toHaveLength(1)
-    expect(result.value?.pets).toEqual(
+    if (result.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
+    expect(result.value.pets).toHaveLength(1)
+    expect(result.value.pets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           petName: createSmallPet.petName,
@@ -100,7 +108,7 @@ describe('Search Pets', () => {
         }),
       ]),
     )
-    result.value?.pets.forEach((pet) => {
+    result.value.pets.forEach((pet) => {
       const petOrganization = inMemoryOrganizationRepository.item.find(
         (org) => org.id.toString() === pet.organization_id,
       )
@@ -134,15 +142,19 @@ describe('Search Pets', () => {
       page: 1,
     })
 
-    expect(result.value?.pets).toHaveLength(1)
-    expect(result.value?.pets).toEqual(
+    if (result.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
+    expect(result.value.pets).toHaveLength(1)
+    expect(result.value.pets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           age: '1',
         }),
       ]),
     )
-    result.value?.pets.forEach((pet) => {
+    result.value.pets.forEach((pet) => {
       const petOrganization = inMemoryOrganizationRepository.item.find(
         (org) => org.id.toString() === pet.organization_id,
       )
@@ -176,15 +188,19 @@ describe('Search Pets', () => {
       page: 1,
     })
 
-    expect(result.value?.pets).toHaveLength(1)
-    expect(result.value?.pets).toEqual(
+    if (result.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
+    expect(result.value.pets).toHaveLength(1)
+    expect(result.value.pets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           energy_level: 'low',
         }),
       ]),
     )
-    result.value?.pets.forEach((pet) => {
+    result.value.pets.forEach((pet) => {
       const petOrganization = inMemoryOrganizationRepository.item.find(
         (org) => org.id.toString() === pet.organization_id,
       )
@@ -218,15 +234,19 @@ describe('Search Pets', () => {
       page: 1,
     })
 
-    expect(result.value?.pets).toHaveLength(1)
-    expect(result.value?.pets).toEqual(
+    if (result.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
+    expect(result.value.pets).toHaveLength(1)
+    expect(result.value.pets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           environment: 'indoor',
         }),
       ]),
     )
-    result.value?.pets.forEach((pet) => {
+    result.value.pets.forEach((pet) => {
       const petOrganization = inMemoryOrganizationRepository.item.find(
         (org) => org.id.toString() === pet.organization_id,
       )
@@ -253,12 +273,20 @@ describe('Search Pets', () => {
       page: 1,
     })
 
+    if (resultPage1.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
     const resultPage2 = await sut.execute({
       city: 'São Paulo',
       page: 2,
     })
 
-    expect(resultPage1.value?.pets).toHaveLength(20)
-    expect(resultPage2.value?.pets).toHaveLength(20)
+    if (resultPage2.isLeft()) {
+      throw new Error('Pets not found')
+    }
+
+    expect(resultPage1.value.pets).toHaveLength(20)
+    expect(resultPage2.value.pets).toHaveLength(20)
   })
 })

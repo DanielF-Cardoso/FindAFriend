@@ -4,16 +4,7 @@ import { Pets } from '../domain/entities/pets'
 import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
 import { PetsRepository } from './repositories/pets-repository'
 import { Injectable } from '@nestjs/common'
-
-interface RegisterPetsRequest {
-  petName: string
-  about: string
-  age: string
-  size: string
-  energy_level: string
-  environment: string
-  organization_id: string
-}
+import { RegisterPetDto } from '../dtos/register-pet.dto'
 
 type RegisterPetsResponse = Either<
   OrganizationNotFoundError,
@@ -37,7 +28,9 @@ export class RegisterPetsUseCase {
     energy_level,
     environment,
     organization_id,
-  }: RegisterPetsRequest): Promise<RegisterPetsResponse> {
+  }: RegisterPetDto & {
+    organization_id: string
+  }): Promise<RegisterPetsResponse> {
     const findOrganizationById =
       await this.orgRepository.findById(organization_id)
 

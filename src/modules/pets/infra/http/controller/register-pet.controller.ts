@@ -1,7 +1,5 @@
 import { CurrentUser } from '@/app/auth/current-user-decorator'
 import { UserPayload } from '@/app/auth/jwt-strategy'
-import { ZodValidationPipe } from '@/app/pipes/zod-validation.pipe'
-import { OrganizationAlreadyExistsError } from '@/modules/orgs/application/use-cases/errors/organization-already-exists-error'
 import { RegisterPetsUseCase } from '@/modules/pets/application/register-pet'
 import {
   BadRequestException,
@@ -9,22 +7,12 @@ import {
   ConflictException,
   Controller,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { z } from 'zod'
-
-const registerPetBodySchema = z.object({
-  petName: z.string(),
-  about: z.string(),
-  age: z.string(),
-  size: z.string(),
-  energy_level: z.string(),
-  environment: z.string(),
-})
-
-const bodyValidationPipe = new ZodValidationPipe(registerPetBodySchema)
-
-type RegisterPetBodySchema = z.infer<typeof registerPetBodySchema>
+import { OrganizationNotFoundError } from '@/modules/orgs/application/use-cases/errors/organization-not-found-error'
+import { RegisterPetDto } from '@/modules/pets/dtos/register-pet.dto'
 
 @ApiTags('pets')
 @Controller('/orgs/pets')
@@ -32,55 +20,31 @@ export class RegisterPetController {
   constructor(private registerPetUseCase: RegisterPetsUseCase) {}
 
   @Post()
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        petName: { type: 'string' },
-        about: { type: 'string' },
-        age: { type: 'string' },
-        size: { type: 'string' },
-        energy_level: { type: 'string' },
-        environment: { type: 'string' },
-      },
-      required: [
-        'petName',
-        'about',
-        'age',
-        'size',
-        'energy_level',
-        'environment',
-      ],
-    },
-  })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiBody({ type: RegisterPetDto })
   @ApiResponse({ status: 201, description: 'Pet registered successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 409, description: 'Conflict' })
   async handle(
-    @Body(bodyValidationPipe) body: RegisterPetBodySchema,
+    @Body() body: RegisterPetDto,
     @CurrentUser() orgId: UserPayload,
   ) {
-    const { petName, about, age, size, energy_level, environment } = body
-
-    const registerPet = await this.registerPetUseCase.execute({
-      petName,
-      about,
-      age,
-      size,
-      energy_level,
-      environment,
+    const result = await this.registerPetUseCase.execute({
+      ...body,
       organization_id: orgId.sub,
     })
 
-    if (registerPet.isLeft()) {
-      const error = registerPet.value
+    if (result.isLeft()) {
+      const error = result.value
 
       switch (error.constructor) {
-        case OrganizationAlreadyExistsError:
+        case OrganizationNotFoundError:
           throw new ConflictException(error.message)
         default:
           throw new BadRequestException(error.message)
       }
     }
+
+    return result.value
   }
 }

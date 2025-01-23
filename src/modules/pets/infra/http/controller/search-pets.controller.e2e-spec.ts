@@ -29,7 +29,7 @@ describe('Search Pets (E2E)', () => {
     await app.close()
   })
 
-  test('[GET] /pets', async () => {
+  test('[GET] /pets/search', async () => {
     const organizationData = await organizationFactory.makePrismaOrganization()
 
     for (let i = 0; i < 25; i++) {
@@ -39,14 +39,14 @@ describe('Search Pets (E2E)', () => {
     }
 
     const responsePage1 = await request(app.getHttpServer())
-      .get('/pets')
-      .query({ city: organizationData.city, page: '1' })
+      .get('/pets/search')
+      .query({ city: organizationData.city })
 
     expect(responsePage1.statusCode).toBe(200)
     expect(responsePage1.body.pets).toHaveLength(20)
 
     const responsePage2 = await request(app.getHttpServer())
-      .get('/pets')
+      .get('/pets/search')
       .query({ city: organizationData.city, page: '2' })
 
     expect(responsePage2.statusCode).toBe(200)

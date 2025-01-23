@@ -25,6 +25,10 @@ describe('Get Pet (E2E)', () => {
     await app.init()
   })
 
+  afterAll(async () => {
+    await app.close()
+  })
+
   test('[GET] /pet/:petId', async () => {
     const makeOrganization = await organizationFactory.makePrismaOrganization()
     const makePet = await petFactory.makePrismaPet({
@@ -38,12 +42,14 @@ describe('Get Pet (E2E)', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       pet: expect.objectContaining({
+        id: expect.any(String),
         petName: makePet.petName,
         about: makePet.about,
         age: makePet.age,
         size: makePet.size,
         energy_level: makePet.energy_level,
         environment: makePet.environment,
+        createdAt: expect.any(String),
       }),
     })
   })

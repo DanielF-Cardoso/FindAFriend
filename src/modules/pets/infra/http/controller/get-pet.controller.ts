@@ -4,35 +4,50 @@ import {
   Controller,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import { PetPresenter } from '../presenters/pet.presenter'
 import { Public } from '@/app/auth/public'
-import { ApiParam, ApiResponse } from '@nestjs/swagger'
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { GetPetDto } from '@/modules/pets/dtos/get-pet.dto'
+import { PetNotFoundError } from '@/modules/pets/application/errors/pet-not-found-error'
 
-@Controller('/pets/:petId')
+@ApiTags('pets')
+@Controller('/pet/:id')
 export class GetPetController {
   constructor(private getPetUseCase: GetPetUseCase) {}
 
   @Get()
   @Public()
   @HttpCode(200)
-  @ApiParam({ name: 'petId', required: true, type: String })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiParam({ name: 'id', required: true, type: String })
   @ApiResponse({
     status: 200,
     description: 'Pet retrieved successfully',
     type: PetPresenter,
   })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  async handle(@Param('petId') petId: string) {
-    const getPet = await this.getPetUseCase.execute({
-      id: petId,
-    })
+  @ApiResponse({ status: 404, description: 'Pet not found' })
+  async handle(@Param() params: GetPetDto) {
+    const { id } = params
 
-    if (getPet.isLeft()) {
-      throw new BadRequestException()
+    const result = await this.getPetUseCase.execute({ id })
+
+    if (result.isLeft()) {
+      const error = result.value
+
+      switch (error.constructor) {
+        case PetNotFoundError:
+          throw new NotFoundException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
 
-    return { pet: PetPresenter.toHTTP(getPet.value.pet) }
+    return { pet: PetPresenter.toHTTP(result.value.pet) }
   }
 }

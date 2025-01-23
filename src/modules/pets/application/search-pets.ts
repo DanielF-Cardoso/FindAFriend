@@ -1,19 +1,12 @@
-import { Either, right } from '@/core/either'
+import { Either, right, left } from '@/core/either'
 import { Pets } from '../domain/entities/pets'
 import { PetsRepository } from './repositories/pets-repository'
 import { Injectable } from '@nestjs/common'
-
-interface SearchPetsRequest {
-  city: string
-  size?: string
-  age?: string
-  energy_level?: string
-  environment?: string
-  page: number
-}
+import { SearchPetsDto } from '../dtos/search-pet.dto'
+import { PetNotFoundError } from './errors/pet-not-found-error'
 
 type SearchPetsResponse = Either<
-  null,
+  PetNotFoundError,
   {
     pets: Pets[]
   }
@@ -29,8 +22,8 @@ export class SearchPetsUseCase {
     age,
     energy_level,
     environment,
-    page,
-  }: SearchPetsRequest): Promise<SearchPetsResponse> {
+    page = 1,
+  }: SearchPetsDto): Promise<SearchPetsResponse> {
     const pets = await this.petsRepository.findAll({
       city,
       size,
@@ -39,6 +32,10 @@ export class SearchPetsUseCase {
       environment,
       page,
     })
+
+    if (!pets) {
+      return left(new PetNotFoundError())
+    }
 
     return right({
       pets,
