@@ -51,6 +51,40 @@ export class Pets extends Entity<PetsProps> {
     return this.props.updatedAt
   }
 
+  set petName(value: string) {
+    this.props.petName = value
+    this.touchUpdatedAt()
+  }
+
+  set about(value: string) {
+    this.props.about = value
+    this.touchUpdatedAt()
+  }
+
+  set age(value: string) {
+    this.props.age = value
+    this.touchUpdatedAt()
+  }
+
+  set size(value: string) {
+    this.props.size = value
+    this.touchUpdatedAt()
+  }
+
+  set energy_level(value: string) {
+    this.props.energy_level = value
+    this.touchUpdatedAt()
+  }
+
+  set environment(value: string) {
+    this.props.environment = value
+    this.touchUpdatedAt()
+  }
+
+  private touchUpdatedAt() {
+    this.props.updatedAt = new Date()
+  }
+
   static create(props: Optional<PetsProps, 'createdAt'>, id?: UniqueEntityID) {
     const pets = new Pets(
       {

@@ -13,5 +13,6 @@ export abstract class PetsRepository {
   abstract create(pet: Pets): Promise<void>
   abstract findById(id: string): Promise<Pets | null>
   abstract findAll(params: FindAllPetsParams): Promise<Pets[]>
+  abstract save(pet: Pets): Promise<void>
   abstract delete(pet: Pets): Promise<void>
 }
