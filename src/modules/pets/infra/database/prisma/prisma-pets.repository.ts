@@ -16,6 +16,12 @@ export class PrismaPetsRepository implements PetsRepository {
     await this.prisma.pet.create({ data })
   }
 
+  async delete(pet: Pets): Promise<void> {
+    await this.prisma.pet.delete({
+      where: { id: pet.id.toString() },
+    })
+  }
+
   async findById(id: string): Promise<Pets | null> {
     const pet = await this.prisma.pet.findUnique({
       where: { id },
