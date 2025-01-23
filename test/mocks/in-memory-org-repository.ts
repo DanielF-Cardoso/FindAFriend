@@ -1,9 +1,7 @@
 import { getDistanceBetweenCoordinates } from '@/core/utils/geo-utils'
-import {
-  FindManyNearbyParams,
-  OrganizationRepository,
-} from '@/modules/orgs/application/repositories/org-repository'
+import { OrganizationRepository } from '@/modules/orgs/application/repositories/org-repository'
 import { Organization } from '@/modules/orgs/domain/entities/org'
+import { FetchNearbyOrganizationDto } from '@/modules/orgs/dtos/fetch-nearby-organization.dto'
 
 export class InMemoryOrganizationRepository implements OrganizationRepository {
   public item: Organization[] = []
@@ -32,10 +30,10 @@ export class InMemoryOrganizationRepository implements OrganizationRepository {
     return organization
   }
 
-  async findManyNearby(params: FindManyNearbyParams) {
+  async findManyNearby(params: FetchNearbyOrganizationDto) {
     return this.item.filter((items) => {
       const distance = getDistanceBetweenCoordinates(
-        { latitude: params.latitude, longitude: params.longitude },
+        { latitude: params.userLatitude, longitude: params.userLongitude },
         {
           latitude: items.latitude,
           longitude: items.longitude,
