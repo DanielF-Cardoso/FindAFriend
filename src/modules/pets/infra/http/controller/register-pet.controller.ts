@@ -14,7 +14,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { OrganizationNotFoundError } from '@/modules/orgs/application/use-cases/errors/organization-not-found-error'
 import { RegisterPetDto } from '@/modules/pets/dtos/register-pet.dto'
 
-@ApiTags('pets')
+@ApiTags('organizations')
 @Controller('/orgs/pets')
 export class RegisterPetController {
   constructor(private registerPetUseCase: RegisterPetsUseCase) {}
